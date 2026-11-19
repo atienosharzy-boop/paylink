@@ -1,0 +1,22 @@
+# Binaries
+paylink
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Data & database backups
+data/*.tmp
+
+# Environment variables
+.env
+.env.local
+
+# OS & Editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
