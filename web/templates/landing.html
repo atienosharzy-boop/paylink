@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayLink for Schools | Smart M-Pesa Fee Links & Balance Tracker</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-logo">P</div>
+      <div class="brand-text">
+        <h1>PayLink</h1>
+        <p>School Fee Tracking &middot; Kenya</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel">Dark</span>
+      </button>
+      <a href="#how-it-works" class="btn btn-secondary btn-sm" style="display: none; @media(min-width: 768px){display: inline-flex;}">How it Works</a>
+      <a href="#pricing" class="btn btn-secondary btn-sm" style="display: none; @media(min-width: 768px){display: inline-flex;}">Pricing</a>
+      <a href="/admin" class="btn btn-primary btn-sm">Bursar Dashboard &rarr;</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-landing">
+    <div class="hero-grid">
+      
+      <!-- Hero Left: Pitch & Value Prop -->
+      <div class="reveal">
+        <div class="hero-badge">
+          <span>✨</span> M-Pesa School Fee Links &middot; Early Access
+        </div>
+
+        <h1 class="hero-title">
+          Stop Chasing M-Pesa Screenshots. Collect Fees with <span class="text-gradient">One Link.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Give each student their own persistent payment link. Parents pay via M-Pesa, fee balances update in real-time, and official receipts are issued automatically. Zero manual reconciliation.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="/admin" class="btn btn-primary btn-lg">
+            Launch Bursar Dashboard &rarr;
+          </a>
+          <a href="/pay/amani-kimani-adm-2024-012" target="_blank" class="btn btn-secondary btn-lg">
+            📱 Try Parent Payment Link
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="hero-trust-item">
+            <span>🔒</span> Direct to Your Paybill/Till
+          </div>
+          <div class="hero-trust-item">
+            <span>⚡</span> 0 Apps to Install
+          </div>
+          <div class="hero-trust-item">
+            <span>🇰🇪</span> Safaricom Daraja Ready
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Right: Interactive Floating Payment Card Mockup -->
+      <div class="hero-mockup-container reveal delay-200">
+        
+        <!-- Floating Pill Badges -->
+        <div class="floating-pill pill-top">
+          <span>✅</span>
+          <div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">M-Pesa Express</div>
+            <div>Ref: <strong>SKL4X9Q2TB</strong></div>
+          </div>
+        </div>
+
+        <div class="floating-pill pill-bottom">
+          <span>📊</span>
+          <div>
+            <div style="font-size: 0.7rem; color: var(--text-muted);">School Ledger</div>
+            <div><strong>Instant Balance Update</strong></div>
+          </div>
+        </div>
+
+        <!-- The Floating Card -->
+        <div class="floating-payment-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <span class="badge" style="background: var(--primary-light); color: var(--primary);">
+              Term 1, 2026 Portal
+            </span>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">
+              Paybill: 400200
+            </span>
+          </div>
+
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--dark); margin-bottom: 0.2rem;">
+            Hillcrest Premier Academy
+          </h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Official Fee Payment Link
+          </p>
+
+          <!-- Student Strip -->
+          <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 0.85rem; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.35rem;">
+              <span style="color: var(--text-muted);">Learner:</span>
+              <strong style="color: var(--dark);">Amani Kimani</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.35rem;">
+              <span style="color: var(--text-muted);">Admission No:</span>
+              <span style="font-family: monospace; font-weight: 700;">ADM-2024-012</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.35rem;">
+              <span style="color: var(--text-muted);">Class:</span>
+              <span>Grade 4 East</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.95rem; border-top: 1px dashed var(--border); padding-top: 0.4rem; margin-top: 0.4rem;">
+              <span style="font-weight: 700; color: var(--dark);">Balance Due:</span>
+              <span style="font-weight: 900; color: var(--danger);">KES 10,500</span>
+            </div>
+          </div>
+
+          <!-- Interactive Chips in Mockup -->
+          <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase;">
+            Try Clicking an Amount:
+          </div>
+          <div class="amount-chips" style="margin-bottom: 1rem;">
+            <div class="chip hero-chip active" data-amount="10500" style="padding: 0.6rem;">
+              <span class="chip-label">Full Balance</span>
+              <span class="chip-val" style="font-size: 0.95rem;">KES 10,500</span>
+            </div>
+            <div class="chip hero-chip" data-amount="5250" style="padding: 0.6rem;">
+              <span class="chip-label">50% Part</span>
+              <span class="chip-val" style="font-size: 0.95rem;">KES 5,250</span>
+            </div>
+          </div>
+
+          <button id="heroPayBtn" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 0.95rem;">
+            Pay KES 10,500 with M-Pesa
+          </button>
+
+          <div id="heroMockupNotification" style="display: none; margin-top: 0.85rem; padding: 0.65rem; background: var(--success-light); color: var(--success); border-radius: 8px; font-size: 0.78rem;"></div>
+
+          <div style="text-align: center; margin-top: 0.75rem; font-size: 0.72rem; color: var(--text-muted);">
+            🔒 Safaricom M-Pesa Express &middot; PIN entered only on your phone
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Animated Live Stats Strip -->
+  <section class="container" style="padding-top: 0;">
+    <div class="stats-strip reveal">
+      <div class="strip-stat">
+        <div class="strip-num">
+          <span data-counter-target="60" data-counter-suffix="s">0s</span>
+        </div>
+        <div class="strip-desc">to create your first payment link</div>
+      </div>
+
+      <div class="strip-stat">
+        <div class="strip-num">
+          <span data-counter-target="0" data-counter-prefix="KES ">KES 0</span>
+        </div>
+        <div class="strip-desc">setup fee, free to start</div>
+      </div>
+
+      <div class="strip-stat">
+        <div class="strip-num">
+          <span data-counter-target="0" data-counter-suffix=" apps">0 apps</span>
+        </div>
+        <div class="strip-desc">for parents to download</div>
+      </div>
+
+      <div class="strip-stat">
+        <div class="strip-num">
+          <span data-counter-target="100" data-counter-suffix="%">0%</span>
+        </div>
+        <div class="strip-desc">matched M-Pesa receipts</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4-Step Animated Flow -->
+  <section class="container" id="how-it-works">
+    <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem;" class="reveal">
+      <span class="badge" style="background: var(--primary-light); color: var(--primary); margin-bottom: 0.75rem;">
+        Simple 4-Step Flow
+      </span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--dark); line-height: 1.2;">
+        Your Link, Paid Straight to Your M-Pesa
+      </h2>
+      <p style="color: var(--text-muted); margin-top: 0.75rem;">
+        PayLink sits smoothly between parents and your school's Paybill or Till, ending screenshot chaos forever.
+      </p>
+    </div>
+
+    <div class="flow-grid">
+      <!-- Step 1 -->
+      <div class="flow-step-card reveal delay-100">
+        <div class="flow-step-num">1</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          You Make a Link
+        </h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Add students with their admission number and term fee. Each gets a unique link.
+        </p>
+        <span class="flow-arrow-indicator">&rarr;</span>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="flow-step-card reveal delay-200">
+        <div class="flow-step-num">2</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          Parent Opens It
+        </h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          They click the link on WhatsApp or SMS. The fee and balance are already calculated.
+        </p>
+        <span class="flow-arrow-indicator">&rarr;</span>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="flow-step-card reveal delay-300">
+        <div class="flow-step-num">3</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          M-Pesa Prompts PIN
+        </h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          The parent approves the prompt on their own phone. PIN is never seen by PayLink.
+        </p>
+        <span class="flow-arrow-indicator">&rarr;</span>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="flow-step-card reveal delay-400">
+        <div class="flow-step-num">4</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          Instant Receipt & Sync
+        </h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Money lands in your till. Receipt SMS is dispatched and your dashboard updates in real time.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Savings Calculator -->
+  <section class="container">
+    <div class="calc-section reveal">
+      <div class="calc-grid">
+        <div>
+          <span class="badge" style="background: var(--primary-light); color: var(--primary); margin-bottom: 0.75rem;">
+            Time & Money Calculator
+          </span>
+          <h3 style="font-size: 2rem; font-weight: 800; color: var(--dark); line-height: 1.25; margin-bottom: 1rem;">
+            See How Much Time & Reconciliation Headaches You Save
+          </h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+            Drag the slider to match your school's learner population:
+          </p>
+
+          <div class="calc-slider-wrapper">
+            <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 0.5rem;">
+              <span>Enrolled Students:</span>
+              <span id="calcStudentsVal" style="color: var(--primary); font-size: 1.1rem;">250 students</span>
+            </div>
+            <input type="range" id="calcStudents" class="calc-slider" min="30" max="1000" step="10" value="250">
+          </div>
+        </div>
+
+        <div>
+          <div class="calc-result-box">
+            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.35rem;">
+              Bursar Reconciliation Time Saved
+            </div>
+            <div id="calcHoursSaved" class="calc-result-num">45 hrs / term</div>
+            <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border);">
+              Estimated Unreconciled Fees Prevented:<br>
+              <strong id="calcFeesProtected" style="color: var(--dark); font-size: 1.25rem;">KES 350,000</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- School Use Cases -->
+  <section class="container">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 2.5rem;" class="reveal">
+      <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--dark);">
+        Built for Everyone Who Teaches in Kenya
+      </h2>
+      <p style="color: var(--text-muted); margin-top: 0.5rem;">
+        Whether you manage a 500-student academy or run private tutoring lessons after hours.
+      </p>
+    </div>
+
+    <div class="usecases-grid">
+      <div class="usecase-card reveal delay-100">
+        <div class="usecase-icon">🏫</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          Primary & Secondary Academies
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">
+          Collect termly tuition, transport, boarding and lunch fees with clean class-by-class clearance tracking.
+        </p>
+      </div>
+
+      <div class="usecase-card reveal delay-200">
+        <div class="usecase-icon">🎓</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          Private Tutors & Trainers
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">
+          Send payment links per session or monthly bundle. Parents pay on their own time without back-and-forth messages.
+        </p>
+      </div>
+
+      <div class="usecase-card reveal delay-300">
+        <div class="usecase-icon">🎨</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          Music, Arts & Sports Clubs
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">
+          Enroll students into swimming, piano, or football clinics with fixed fees and instant digital confirmation.
+        </p>
+      </div>
+
+      <div class="usecase-card reveal delay-400">
+        <div class="usecase-icon">🎒</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--dark); margin-bottom: 0.5rem;">
+          Daycare & Kindergartens
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">
+          Manage weekly or monthly diaper, feeding, and care fee installments with automated WhatsApp receipts.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="container">
+    <div class="card reveal" style="padding: 2.5rem;">
+      <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--dark); text-align: center; margin-bottom: 0.5rem;">
+        Better Than Sharing Your Till Number
+      </h2>
+      <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">
+        Asking parents to send money to a till works, until you're tracking 150 payments by hand every opening week.
+      </p>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 25%;">Challenge</th>
+              <th style="width: 35%;">Sharing Paybill / Till Alone</th>
+              <th style="width: 40%; color: var(--primary);">With PayLink for Schools</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Admission Number Mistakes</strong></td>
+              <td style="color: var(--danger);">Common. Parents misspell names or leave account blank.</td>
+              <td style="color: var(--primary); font-weight: 700;">Zero mistakes. Locked to learner's unique link.</td>
+            </tr>
+            <tr>
+              <td><strong>Confirming Payments</strong></td>
+              <td style="color: var(--danger);">Scrolling through 200 SMS alerts on bursar phone.</td>
+              <td style="color: var(--primary); font-weight: 700;">Automated. Ledger updates within 2 seconds.</td>
+            </tr>
+            <tr>
+              <td><strong>Partial Payments & Balances</strong></td>
+              <td style="color: var(--danger);">Calculated by hand on paper or manual Excel.</td>
+              <td style="color: var(--primary); font-weight: 700;">Running balance tracked automatically.</td>
+            </tr>
+            <tr>
+              <td><strong>Receipts to Parents</strong></td>
+              <td style="color: var(--danger);">Handwritten carbon receipt booklets.</td>
+              <td style="color: var(--primary); font-weight: 700;">Instant digital SMS & PDF printable receipt.</td>
+            </tr>
+            <tr>
+              <td><strong>Chasing Fee Balances</strong></td>
+              <td style="color: var(--danger);">Calling & texting 80 parents one by one.</td>
+              <td style="color: var(--primary); font-weight: 700;">One-click "Remind All Owed" broadcast.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- School Pricing Section -->
+  <section class="container" id="pricing">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 3rem;" class="reveal">
+      <span class="badge" style="background: var(--primary-light); color: var(--primary); margin-bottom: 0.75rem;">
+        Simple School Pricing
+      </span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--dark);">
+        Transparent Pricing Built for Schools
+      </h2>
+      <p style="color: var(--text-muted); margin-top: 0.5rem;">
+        Start free with our full demo mode. Upgrade when you're collecting real fees each term.
+      </p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card reveal delay-100">
+        <h4 style="font-size: 1.25rem; font-weight: 700; color: var(--dark);">Starter Demo</h4>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">Ideal for testing & private tutors</p>
+        
+        <div class="pricing-price">
+          KES 0 <span>/ term</span>
+        </div>
+
+        <ul class="pricing-features">
+          <li>Up to 25 student fee links</li>
+          <li>Partial payments & balance tracking</li>
+          <li>M-Pesa STK push simulation</li>
+          <li>Digital receipts for parents</li>
+          <li>CSV accounting export</li>
+        </ul>
+
+        <a href="/admin" class="btn btn-secondary btn-block">Start Free Demo</a>
+      </div>
+
+      <!-- Standard School (Featured) -->
+      <div class="pricing-card featured reveal delay-200">
+        <div class="pricing-badge">Most Popular</div>
+        <h4 style="font-size: 1.25rem; font-weight: 700; color: var(--dark);">Standard School</h4>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">For single-campus primary & day schools</p>
+        
+        <div class="pricing-price" style="color: var(--primary);">
+          KES 1,500 <span>/ term</span>
+        </div>
+
+        <ul class="pricing-features">
+          <li><strong>Unlimited</strong> student fee links</li>
+          <li>School branding & motto on all links</li>
+          <li>One-click automated SMS reminders</li>
+          <li>WhatsApp sharing integration</li>
+          <li>Live Safaricom Daraja Paybill connect</li>
+          <li>Priority Bursar phone support</li>
+        </ul>
+
+        <a href="/admin" class="btn btn-primary btn-block">Get Standard School</a>
+      </div>
+
+      <!-- Multi-Campus Academy -->
+      <div class="pricing-card reveal delay-300">
+        <h4 style="font-size: 1.25rem; font-weight: 700; color: var(--dark);">Group of Schools</h4>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">For multi-campus & large institutions</p>
+        
+        <div class="pricing-price">
+          KES 3,500 <span>/ term</span>
+        </div>
+
+        <ul class="pricing-features">
+          <li>Multiple school campuses & paybills</li>
+          <li>Role-based bursar & teacher logins</li>
+          <li>Custom SMS sender ID (e.g. HILLCREST)</li>
+          <li>Automated daily bank settlement sync</li>
+          <li>Dedicated account onboarding</li>
+        </ul>
+
+        <a href="mailto:info@paylink.co.ke?subject=PayLink%20Multi-Campus" class="btn btn-secondary btn-block">Contact Sales</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive FAQ Accordion -->
+  <section class="container">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 2.5rem;" class="reveal">
+      <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--dark);">
+        Frequently Asked Questions
+      </h2>
+      <p style="color: var(--text-muted); margin-top: 0.5rem;">
+        Everything you need to know about setting up PayLink for your school.
+      </p>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Do parents need to install an app to pay?</span>
+          <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">
+          No! Parents do not need any app. They simply tap the link on WhatsApp or SMS in any phone browser, enter their phone number, and approve the M-Pesa PIN prompt directly on their phone screen.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Where does the money go when parents pay?</span>
+          <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">
+          All funds go directly to your school's existing Safaricom Paybill or Till number. PayLink does not hold your funds, keeping your school compliant with regulatory guidelines.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>Can parents pay in installments (partial payments)?</span>
+          <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">
+          Yes! PayLink was specifically built for partial fee payments. A parent can pay KES 5,000 today and the remaining balance next week. The system updates the running balance in real time and prevents overpayments.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>How does the M-Pesa STK push prompt work?</span>
+          <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">
+          When a parent clicks "Pay with M-Pesa", Safaricom's system sends a prompt directly to their handset asking for their M-Pesa PIN. PayLink never asks for, sees, or stores parent PINs.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <span>How do I import our school's student roster?</span>
+          <span class="faq-chevron">&#9660;</span>
+        </div>
+        <div class="faq-answer">
+          You can add students one by one or click "Bulk Import" on your Bursar Dashboard to paste your list of students from Excel in seconds.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final Call to Action -->
+  <section class="container" style="margin-bottom: 4rem;">
+    <div style="background: linear-gradient(135deg, var(--primary) 0%, #006029 100%); color: #ffffff; border-radius: 20px; padding: 3.5rem 2rem; text-align: center; box-shadow: var(--shadow-glow);" class="reveal">
+      <h2 style="font-size: 2.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 1rem;">
+        Your First School Fee Link is 60 Seconds Away.
+      </h2>
+      <p style="font-size: 1.15rem; max-width: 600px; margin: 0 auto 2.25rem; opacity: 0.95;">
+        Join forward-thinking Kenyan schools and tutors who have eliminated screenshot reconciliation.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="/admin" class="btn" style="background: #ffffff; color: #00A349; font-weight: 800; font-size: 1.1rem; padding: 0.9rem 2.25rem;">
+          Open Free Bursar Dashboard &rarr;
+        </a>
+        <a href="/pay/amani-kimani-adm-2024-012" target="_blank" class="btn" style="background: rgba(255, 255, 255, 0.2); color: #ffffff; font-weight: 700; font-size: 1.1rem; padding: 0.9rem 1.75rem; border: 1px solid rgba(255, 255, 255, 0.4);">
+          Try Parent Payment View
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid var(--border); padding: 3rem 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; background: var(--card-bg);">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+      <div class="brand-logo" style="width: 30px; height: 30px; font-size: 0.9rem; border-radius: 8px;">P</div>
+      <strong style="color: var(--dark); font-size: 1.1rem;">PayLink</strong>
+    </div>
+    <p style="margin-bottom: 0.5rem;">Smart M-Pesa Fee Collection & Ledger Tracking for Kenyan Schools and Tutors.</p>
+    <p>&copy; 2026 PayLink Kenya. All rights reserved.</p>
+  </footer>
+
+  <div id="toastNotification" class="toast"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
