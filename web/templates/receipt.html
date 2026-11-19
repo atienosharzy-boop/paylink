@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receipt {{.Payment.MpesaReceipt}} | {{.School.Name}}</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  </style>
+</head>
+<body style="background: var(--bg);">
+
+  <div class="receipt-wrapper">
+    <div class="receipt-stamp">PAID &middot; VERIFIED</div>
+
+    <div class="receipt-title">
+      <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700; text-transform: uppercase; margin-bottom: 0.25rem;">
+        Official School Fee Payment Receipt
+      </div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--dark);">{{.School.Name}}</h2>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+        {{.School.Motto}} &middot; Tel: {{.School.ContactPhone}} &middot; Email: {{.School.Email}}
+      </p>
+    </div>
+
+    <div class="receipt-grid">
+      <div>
+        <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">M-Pesa Reference No</div>
+        <div style="font-size: 1.15rem; font-weight: 800; color: var(--primary); font-family: monospace;">
+          {{.Payment.MpesaReceipt}}
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase;">Payment Date</div>
+        <div style="font-weight: 600;">
+          {{.Payment.PaidAt.Format "02 Jan 2006, 15:04"}}
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+      <div class="info-row">
+        <span class="label">Student Name:</span>
+        <span class="val">{{.Student.FullName}}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Admission No:</span>
+        <span class="val" style="font-family: monospace;">{{.Student.AdmNo}}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Class / Grade:</span>
+        <span class="val">{{.Student.ClassGrade}}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Academic Term:</span>
+        <span class="val">{{.School.CurrentTerm}}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Paid By Phone:</span>
+        <span class="val" style="font-family: monospace;">+{{.Payment.PhoneNumber}}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Channel:</span>
+        <span class="val">Lipa na M-Pesa (PayLink STK Push)</span>
+      </div>
+    </div>
+
+    <table class="receipt-table">
+      <thead>
+        <tr>
+          <th>Fee Description</th>
+          <th style="text-align: right;">Amount Paid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <strong>{{.School.CurrentTerm}} Tuition & General Fees</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">M-Pesa Transaction ID: {{.Payment.MpesaReceipt}}</div>
+          </td>
+          <td style="text-align: right; font-weight: 700; font-size: 1.1rem; color: var(--primary);">
+            KES {{printf "%d" .Payment.Amount}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="border-top: 2px solid var(--border); padding-top: 1rem; margin-bottom: 2rem;">
+      <div class="info-row" style="font-size: 1.1rem;">
+        <span class="label" style="font-weight: 700; color: var(--dark);">Total Amount Received:</span>
+        <span class="val receipt-total">KES {{printf "%d" .Payment.Amount}}</span>
+      </div>
+      <div class="info-row" style="margin-top: 0.5rem;">
+        <span class="label">Remaining Outstanding Balance:</span>
+        <span class="val" style="font-weight: 700; color: {{if eq .Payment.BalanceAfter 0}}var(--primary){{else}}var(--danger){{end}};">
+          KES {{printf "%d" .Payment.BalanceAfter}}
+        </span>
+      </div>
+    </div>
+
+    <div class="no-print" style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+      <button class="btn btn-primary" onclick="window.print()">
+        🖨️ Print / Save PDF Receipt
+      </button>
+      <a href="https://wa.me/?text=Official+School+Fee+Receipt+from+{{.School.Name}}+for+{{.Student.FullName}}+amounting+to+KES+{{.Payment.Amount}}+%28Ref%3A+{{.Payment.MpesaReceipt}}%29.+View+online%3A+{{.BaseURL}}%2Freceipt%2F{{.Payment.MpesaReceipt}}" 
+         target="_blank" class="btn btn-secondary" style="color: #25D366;">
+        📱 Share on WhatsApp
+      </a>
+      {{if .Student.Slug}}
+      <a href="/pay/{{.Student.Slug}}" class="btn btn-secondary">
+        &larr; Student Payment Page
+      </a>
+      {{end}}
+      <a href="/admin" class="btn btn-secondary">
+        Bursar Dashboard
+      </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem; font-size: 0.75rem; color: var(--text-muted);">
+      This is an authentic computer-generated digital receipt authenticated via Safaricom M-Pesa.
+    </div>
+  </div>
+
+</body>
+</html>

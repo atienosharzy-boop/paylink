@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pay Fees: {{.Student.FullName}} | {{.School.Name}}</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  </style>
+</head>
+<body style="background: var(--bg);">
+
+  <div class="pay-wrapper">
+    <div class="pay-card">
+      
+      <!-- School Branding Header -->
+      <div class="pay-header">
+        <div class="pay-school-badge">{{.School.CurrentTerm}} Official Portal</div>
+        <h2>{{.School.Name}}</h2>
+        <p style="font-size: 0.85rem; opacity: 0.9; margin-top: 0.25rem;">
+          Paybill: <strong>{{.School.Paybill}}</strong> &middot; Account: <strong>{{.Student.AdmNo}}</strong>
+        </p>
+      </div>
+
+      <div class="pay-body">
+        
+        <!-- Student Information Details -->
+        <div class="student-info-strip">
+          <div class="info-row">
+            <span class="label">Student Name:</span>
+            <span class="val">{{.Student.FullName}}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Admission No:</span>
+            <span class="val" style="font-family: monospace;">{{.Student.AdmNo}}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Class / Grade:</span>
+            <span class="val">{{.Student.ClassGrade}}</span>
+          </div>
+          <div class="info-row" style="margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px dashed var(--border);">
+            <span class="label">Total Term Fee:</span>
+            <span class="val">KES {{printf "%d" .Student.TermFee}}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Paid So Far:</span>
+            <span class="val" style="color: var(--primary);">KES {{printf "%d" .Student.PaidAmount}}</span>
+          </div>
+          <div class="info-row" style="font-size: 1.05rem; margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid var(--border);">
+            <span class="label" style="font-weight: 700; color: var(--dark);">Remaining Balance:</span>
+            <span class="val" style="font-weight: 800; color: {{if eq .Student.Balance 0}}var(--primary){{else}}var(--danger){{end}};">
+              KES {{printf "%d" .Student.Balance}}
+            </span>
+          </div>
+        </div>
+
+        {{if eq .Student.Balance 0}}
+        <!-- Cleared State -->
+        <div style="text-align: center; padding: 1.5rem 0;">
+          <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎉</div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">
+            Fees Fully Cleared!
+          </h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+            There is no outstanding fee balance for {{.Student.FullName}} this term. Thank you!
+          </p>
+          <a href="/admin" class="btn btn-secondary btn-block">Back to School Dashboard</a>
+        </div>
+
+        {{else}}
+
+        <!-- Payment Selection -->
+        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem;">
+          Select Payment Amount
+        </label>
+        
+        <div class="amount-chips">
+          <div class="chip active" data-amount="{{.Student.Balance}}">
+            <span class="chip-label">Full Balance</span>
+            <span class="chip-val">KES {{printf "%d" .Student.Balance}}</span>
+          </div>
+          
+          {{if and (gt .HalfBalance 0) (ne .HalfBalance .Student.Balance)}}
+          <div class="chip" data-amount="{{.HalfBalance}}">
+            <span class="chip-label">50% Balance</span>
+            <span class="chip-val">KES {{printf "%d" .HalfBalance}}</span>
+          </div>
+          {{else}}
+          <div class="chip" data-amount="{{.ThirdBalance}}">
+            <span class="chip-label">Installment</span>
+            <span class="chip-val">KES {{printf "%d" .ThirdBalance}}</span>
+          </div>
+          {{end}}
+        </div>
+
+        <div class="form-group">
+          <label>Or enter a custom amount (KES)</label>
+          <input type="number" id="customAmount" class="form-input btn-block" placeholder="e.g. 5000" min="1" max="{{.Student.Balance}}">
+        </div>
+
+        <div class="form-group" style="margin-top: 1.25rem;">
+          <label>M-Pesa Phone Number</label>
+          <input type="text" id="parentPhone" class="form-input btn-block" value="{{.Student.ParentPhone}}" placeholder="e.g. 0712345678">
+          <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+            The M-Pesa prompt will be sent directly to this number.
+          </small>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button id="payMpesaBtn" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 1rem;">
+            Pay KES {{printf "%d" .Student.Balance}} with M-Pesa
+          </button>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.25rem; font-size: 0.75rem; color: var(--text-muted);">
+          🔒 Secured by Safaricom M-Pesa &middot; You will be asked for your PIN only on your phone.
+        </div>
+        {{end}}
+
+      </div>
+    </div>
+  </div>
+
+  <!-- STK Prompt Modal -->
+  <div class="modal-overlay" id="stkModal">
+    <div class="modal-content" style="max-width: 420px;">
+      <div class="stk-modal">
+        <div class="phone-animation">📱</div>
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Check Your Phone</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+          An M-Pesa prompt has been sent. Please enter your M-Pesa PIN on your phone to authorize payment.
+        </p>
+
+        {{if .DemoMode}}
+        <div style="background: #e0f2fe; color: #0369a1; padding: 0.75rem; border-radius: 8px; font-size: 0.8rem; margin-bottom: 1rem;">
+          ⚡ <strong>Demo Mode Active:</strong> Simulating M-Pesa PIN confirmation in <span id="stkCountdown" style="font-weight: 700;">3</span>s...
+        </div>
+        {{end}}
+
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" style="width: 100%; animation: pulse 1.5s infinite;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      initPaymentFlow("{{.Student.ID}}", {{.Student.Balance}});
+    });
+  </script>
+</body>
+</html>

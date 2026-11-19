@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{.School.Name}} | Fee Ledger & PayLink Dashboard</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="brand">
+      <div class="brand-logo">P</div>
+      <div class="brand-text">
+        <h1>{{.School.Name}}</h1>
+        <p>Bursar Fee Management &middot; {{.School.CurrentTerm}} &middot; Paybill: <strong>{{.School.Paybill}}</strong></p>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <span id="themeIcon">🌙</span>
+        <span id="themeLabel">Dark</span>
+      </button>
+      {{if .DemoMode}}
+      <span class="badge" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
+        ⚡ Demo Simulation Mode
+      </span>
+      {{end}}
+      <a href="/admin/export.csv" class="btn btn-secondary btn-sm" title="Download Excel/CSV Ledger">
+        📥 Export CSV
+      </a>
+      <button class="btn btn-secondary btn-sm" onclick="openModal('bulkImportModal')">
+        📋 Bulk Import
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('addStudentModal')">
+        + Add Student
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- KPI Analytics Cards -->
+    <section class="stats-grid">
+      <div class="stat-card accent-blue">
+        <div class="stat-label">Total Expected Fees</div>
+        <div class="stat-value">KES {{printf "%d" .Stats.TotalExpectedFees}}</div>
+        <div class="stat-meta">{{.Stats.TotalStudents}} registered students</div>
+      </div>
+
+      <div class="stat-card accent-green">
+        <div class="stat-label">Total Collected</div>
+        <div class="stat-value" style="color: var(--primary);">KES {{printf "%d" .Stats.TotalCollected}}</div>
+        <div class="stat-meta">{{.Stats.ClearedCount}} students fully cleared</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" style="width: {{printf "%.1f" .Stats.ClearancePercentage}}%;"></div>
+        </div>
+      </div>
+
+      <div class="stat-card accent-amber">
+        <div class="stat-label">Total Outstanding Owed</div>
+        <div class="stat-value" style="color: var(--warning);">KES {{printf "%d" .Stats.TotalOutstanding}}</div>
+        <div class="stat-meta">{{.Stats.PartialCount}} partial, {{.Stats.OwingCount}} unpaid</div>
+      </div>
+
+      <div class="stat-card accent-red">
+        <div class="stat-label">Fee Clearance Rate</div>
+        <div class="stat-value">{{printf "%.1f" .Stats.ClearancePercentage}}%</div>
+        <div class="stat-meta" style="margin-top: 0.75rem;">
+          <button class="btn btn-warning btn-sm btn-block" onclick="remindAllOwed()">
+            📢 Remind All Owed ({{.Stats.OwingCount | add .Stats.PartialCount}})
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Students Roster Card -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Student Fee Roster ({{len .Students}})</div>
+        
+        <!-- Filter and Search controls -->
+        <form method="GET" action="/admin" class="filter-bar">
+          <input type="text" name="q" value="{{.Search}}" placeholder="Search student, adm, parent..." class="form-input" style="min-width: 200px;">
+          
+          <select name="class" class="form-select" onchange="this.form.submit()">
+            <option value="">All Classes</option>
+            {{range .Classes}}
+            <option value="{{.}}" {{if eq . $.ClassFilter}}selected{{end}}>{{.}}</option>
+            {{end}}
+          </select>
+
+          <select name="status" class="form-select" onchange="this.form.submit()">
+            <option value="">All Statuses</option>
+            <option value="cleared" {{if eq $.StatusFilter "cleared"}}selected{{end}}>Cleared (0 Balance)</option>
+            <option value="partial" {{if eq $.StatusFilter "partial"}}selected{{end}}>Partially Paid</option>
+            <option value="owing" {{if eq $.StatusFilter "owing"}}selected{{end}}>Owing (Unpaid)</option>
+          </select>
+
+          <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
+          {{if or .Search .ClassFilter .StatusFilter}}
+          <a href="/admin" class="btn btn-secondary btn-sm" style="color: var(--text-muted);">Reset</a>
+          {{end}}
+        </form>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Adm No</th>
+              <th>Student & Class</th>
+              <th>Parent Contact</th>
+              <th>Term Fee</th>
+              <th>Paid</th>
+              <th>Balance</th>
+              <th>Status</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .Students}}
+            <tr>
+              <td><span style="font-family: monospace; font-weight: 700;">{{.AdmNo}}</span></td>
+              <td>
+                <div style="font-weight: 600; color: var(--dark);">{{.FullName}}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">{{.ClassGrade}}</div>
+              </td>
+              <td>
+                <div style="font-size: 0.85rem;">{{.ParentName}}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">+{{.ParentPhone}}</div>
+              </td>
+              <td>KES {{printf "%d" .TermFee}}</td>
+              <td style="color: var(--primary); font-weight: 600;">KES {{printf "%d" .PaidAmount}}</td>
+              <td style="color: {{if eq .Status "cleared"}}var(--text-muted){{else}}var(--danger){{end}}; font-weight: 700;">
+                KES {{printf "%d" .Balance}}
+              </td>
+              <td>
+                <span class="badge badge-{{.Status}}">{{.Status}}</span>
+              </td>
+              <td style="text-align: right;">
+                <div style="display: inline-flex; gap: 0.35rem; align-items: center;">
+                  <button class="btn btn-secondary btn-sm" onclick="copyLink('{{$.BaseURL}}/pay/{{.Slug}}')" title="Copy Parent Payment Link">
+                    🔗 Copy Link
+                  </button>
+                  <a href="/pay/{{.Slug}}" target="_blank" class="btn btn-secondary btn-sm" title="Open Parent Payment Screen">
+                    👁️ View
+                  </a>
+                  {{if gt .Balance 0}}
+                  <button class="btn btn-secondary btn-sm" onclick="sendSingleReminder('{{.ID}}')" title="Send SMS Reminder">
+                    💬 SMS
+                  </button>
+                  <a href="https://wa.me/{{.ParentPhone}}?text=Dear+Parent%2C+{{.FullName}}+has+a+fee+balance+of+KES+{{.Balance}}+for+{{$.School.CurrentTerm}}.+Pay+here%3A+{{$.BaseURL}}%2Fpay%2F{{.Slug}}" 
+                     target="_blank" class="btn btn-secondary btn-sm" style="color: #25D366;" title="Send WhatsApp Link">
+                    📱 WA
+                  </a>
+                  {{end}}
+                  <button class="btn btn-danger btn-sm" onclick="deleteStudent('{{.ID}}', '{{.FullName}}')" title="Delete Student">
+                    ✕
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {{else}}
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                No students match your filter criteria. <a href="/admin">Clear filters</a> or add a new student.
+              </td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Recent Payments Audit Log -->
+    {{if .Stats.RecentPayments}}
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">Recent M-Pesa Payment Audit Trail</div>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Receipt No</th>
+              <th>Student</th>
+              <th>Class</th>
+              <th>Payer Phone</th>
+              <th>Amount Paid</th>
+              <th>Remaining Balance</th>
+              <th>Date & Time</th>
+              <th>Receipt</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{range .Stats.RecentPayments}}
+            <tr>
+              <td><span style="font-family: monospace; font-weight: 700; color: var(--primary);">{{.MpesaReceipt}}</span></td>
+              <td>{{.StudentName}} ({{.AdmNo}})</td>
+              <td>{{.ClassGrade}}</td>
+              <td><span style="font-family: monospace;">+{{.PhoneNumber}}</span></td>
+              <td style="font-weight: 700; color: var(--primary);">KES {{printf "%d" .Amount}}</td>
+              <td>KES {{printf "%d" .BalanceAfter}}</td>
+              <td style="font-size: 0.8rem; color: var(--text-muted);">{{.PaidAt.Format "02 Jan 2006, 15:04"}}</td>
+              <td>
+                <a href="/receipt/{{.MpesaReceipt}}" target="_blank" class="btn btn-secondary btn-sm">
+                  🧾 View Receipt
+                </a>
+              </td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    {{end}}
+
+  </main>
+
+  <!-- Add Student Modal -->
+  <div class="modal-overlay" id="addStudentModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Add New Student</h3>
+        <button class="modal-close" onclick="closeModal('addStudentModal')">&times;</button>
+      </div>
+      <form method="POST" action="/api/students">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Student Full Name *</label>
+            <input type="text" name="full_name" required placeholder="e.g. Amani Kimani" class="form-input btn-block">
+          </div>
+          <div class="form-group">
+            <label>Admission Number *</label>
+            <input type="text" name="adm_no" required placeholder="e.g. ADM-2024-045" class="form-input btn-block">
+          </div>
+          <div class="form-group">
+            <label>Class / Grade *</label>
+            <input type="text" name="class_grade" required placeholder="e.g. Grade 4 East" class="form-input btn-block">
+          </div>
+          <div class="form-group">
+            <label>Parent / Guardian Name</label>
+            <input type="text" name="parent_name" placeholder="e.g. Grace Kimani" class="form-input btn-block">
+          </div>
+          <div class="form-group">
+            <label>Parent M-Pesa Phone Number *</label>
+            <input type="text" name="parent_phone" required placeholder="e.g. 0712345678" class="form-input btn-block">
+          </div>
+          <div class="form-group">
+            <label>Term Fee (KES) *</label>
+            <input type="number" name="term_fee" required value="24000" class="form-input btn-block">
+          </div>
+          <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary btn-block" onclick="closeModal('addStudentModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-block">Register Student</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bulk Import Modal -->
+  <div class="modal-overlay" id="bulkImportModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>Bulk Import Students</h3>
+        <button class="modal-close" onclick="closeModal('bulkImportModal')">&times;</button>
+      </div>
+      <form method="POST" action="/api/students/bulk">
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+            Paste one student per line in CSV format:<br>
+            <code>Name, AdmissionNo, ParentPhone, Class, TermFee</code>
+          </p>
+          <div class="form-group">
+            <textarea name="bulk_text" rows="8" class="form-input btn-block" style="font-family: monospace; font-size: 0.85rem;" placeholder="Sarah Omari, ADM-2024-210, 0712334455, Grade 4 East, 24500&#10;Dennis Karanja, ADM-2024-211, 0722998877, Grade 3 West, 22000"></textarea>
+          </div>
+          <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary btn-block" onclick="closeModal('bulkImportModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-block">Import All Students</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toastNotification" class="toast"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
